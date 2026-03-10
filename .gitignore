@@ -1,0 +1,17 @@
+*.out
+*.exe
+*.app
+train_nn
+
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+
+*weight*.txt
+*.dat
+*.h5
+
+.vscode/
+.DS_Store
