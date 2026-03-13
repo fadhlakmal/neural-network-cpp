@@ -1,10 +1,19 @@
 #include <iostream>
 #include <vector>
 #include "../include/Model.hpp"
+#include "../include/Linear.hpp"
+#include "../include/Activations.hpp"
+#include "../include/Loss.hpp"
+
+using namespace std;
 
 int main() {
-    vector<unsigned> layerSizes = {2, 4, 1}; 
-    Model myModel(layerSizes);
+    Model myModel;
+    
+    myModel.add(new Linear(2, 4));
+    myModel.add(new Sigmoid());
+    myModel.add(new Linear(4, 1));
+    myModel.add(new Sigmoid());
 
     vector<vector<double>> inputData = {
         {0.0, 0.0},
@@ -20,33 +29,35 @@ int main() {
         {0.0}  
     };
 
-    int epochs = 2000;
+    int epochs = 10000;
+    double learningRate = 0.5;
+    
     cout << "\ntraining" << endl;
     
     for (int i = 0; i < epochs; ++i) {
+        double epochLoss = 0.0;
         for (size_t j = 0; j < inputData.size(); ++j) {
-            myModel.forward(inputData[j]);
-            myModel.backward(targetData[j]);
+            vector<double> prediction = myModel.forward(inputData[j]);
+            epochLoss += Loss::mse_loss(prediction, targetData[j]);
+            
+            vector<double> gradient = Loss::mse_gradient(prediction, targetData[j]);
+            myModel.backward(gradient, learningRate);
         }
+        epochLoss /= inputData.size();
         
-        if (i % 500 == 0) {
-            cout << "Epoch " << i << " completed." << endl;
+        if (i % 2000 == 0) {
+            cout << "Epoch " << i << " | Loss: " << epochLoss << endl;
         }
     }
 
     cout << "\ntesting" << endl;
-    vector<double> predictions;
-
     for (size_t i = 0; i < inputData.size(); ++i) {
-        myModel.forward(inputData[i]);
-        myModel.getPredictions(predictions);
+        vector<double> prediction = myModel.forward(inputData[i]);
         
         cout << "Input: [" << inputData[i][0] << ", " << inputData[i][1] << "] "
              << "Target: " << targetData[i][0] << " "
-             << "Prediction: " << predictions[0] << endl;
+             << "Prediction: " << prediction[0] << endl;
     }
-
-    myModel.saveWeights("weights.txt");
 
     return 0;
 }

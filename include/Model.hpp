@@ -1,20 +1,14 @@
 #pragma once
 #include <vector>
-#include <string>
-#include "Neuron.hpp"
-using namespace std;
+#include "Layer.hpp"
 
 class Model {
 private:
-    vector<Layer> layers;
-    double loss;
-    double averageLoss;
-    double smoothingFactor;
-
+    std::vector<Layer*> layers;
+    
 public:
-    Model(const vector<unsigned> &layerSizes);
-    void forward(const vector<double> &inputVals);
-    void backward(const vector<double> &targetVals);
-    void getPredictions(vector<double> &resultVals) const;
-    void saveWeights(const string &filename) const;
+    ~Model();
+    void add(Layer* layer);
+    std::vector<double> forward(std::vector<double> input);
+    void backward(std::vector<double> gradient, double learningRate);
 };
