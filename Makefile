@@ -1,11 +1,18 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17
+CXXFLAGS = -O3 -Wall -Wextra -std=c++17 -fPIC
 TARGET = train_nn
-SRCS = src/main.cpp src/Model.cpp src/Linear.cpp src/Activations.cpp src/Loss.cpp src/Conv2D.cpp src/Utils.cpp
+
+PYBIND_INCLUDES = $(shell python3 -m pybind11 --includes)
+PY_SUFFIX = $(shell python3-config --extension-suffix)
+
+SRCS = src/Model.cpp src/Linear.cpp src/Conv2D.cpp src/Activations.cpp src/Loss.cpp src/Utils.cpp
 OBJS = $(SRCS:.cpp=.o)
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
+$(TARGET): $(OBJS) src/main.o
+	$(CXX) $(CXXFLAGS) $(OBJS) src/main.o -o $(TARGET)
+
+pybind: $(OBJS)
+	$(CXX) $(CXXFLAGS) -shared $(PYBIND_INCLUDES) src/bindings.cpp $(OBJS) -o fent$(PY_SUFFIX)
 
 clean:
-	rm -f $(TARGET) src/*.o weights.txt
+	rm -f $(TARGET) src/*.o *.so *.pyd weights.txt

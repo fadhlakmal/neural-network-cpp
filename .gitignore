@@ -15,3 +15,5 @@ train_nn
 
 .vscode/
 .DS_Store
+
+env/

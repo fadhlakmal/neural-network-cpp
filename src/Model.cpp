@@ -1,7 +1,7 @@
 #include "../include/Model.hpp"
 
 Model::~Model() { 
-    for(auto layer : layers) delete layer; 
+    // for(auto layer : layers) delete layer; 
 }
 
 void Model::add(Layer* layer) {
