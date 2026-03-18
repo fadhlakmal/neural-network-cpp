@@ -1,5 +1,6 @@
 #include "../include/Conv2D.hpp"
 #include <cstdlib>
+#include <cmath>
 
 Conv2D::Conv2D(int inC, int inH, int inW, int outC, int kSize) : inChannels(inC), outChannels(outC), inHeight(inH), inWidth(inW), kernelSize(kSize) {
     outHeight = inHeight - kernelSize + 1;
@@ -12,7 +13,7 @@ Conv2D::Conv2D(int inC, int inH, int inW, int outC, int kSize) : inChannels(inC)
         for(int ic = 0; ic < inChannels; ++ic) {
             for(int ky = 0; ky < kernelSize; ++ky) {
                 for(int kx = 0; kx < kernelSize; ++kx) {
-                    kernels[oc][ic][ky][kx] = ((double)rand() / RAND_MAX) - 0.5;
+                    kernels[oc][ic][ky][kx] = (((double)rand() / RAND_MAX) * 2.0 - 1.0) * std::sqrt(2.0 / (inChannels * kernelSize * kernelSize));
                 }
             }
         }

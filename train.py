@@ -28,12 +28,26 @@ train_data = data[:800]
 test_data = data[800:]
 
 model = nn.Model()
-model.add(nn.Conv2D(1, 28, 28, 8, 3)) 
-model.add(nn.ReLU())
-model.add(nn.Linear(5408, 10))
 
-epochs = 15
-learning_rate = 0.05
+model.add(nn.Conv2D(1, 28, 28, 64, 7))
+model.add(nn.ReLU())
+model.add(nn.MaxPool2D(64, 22, 22, 2))
+model.add(nn.Conv2D(64, 11, 11, 128, 3))
+model.add(nn.ReLU())
+model.add(nn.MaxPool2D(128, 9, 9, 2))
+model.add(nn.Conv2D(128, 4, 4, 256, 3))
+model.add(nn.ReLU())
+model.add(nn.MaxPool2D(256, 2, 2, 2)) 
+model.add(nn.Linear(256, 256))
+model.add(nn.ReLU())
+model.add(nn.Linear(256, 128))
+model.add(nn.ReLU())
+model.add(nn.Linear(128, 64))
+model.add(nn.ReLU())
+model.add(nn.Linear(64, 10))
+
+epochs = 50
+learning_rate = 0.0003
 
 print("training")
 for epoch in range(1, epochs + 1):

@@ -1,14 +1,15 @@
 #include "../include/Linear.hpp"
 #include <cstdlib>
+#include <cmath>
 
 Linear::Linear(int inSize, int outSize) : inputSize(inSize), outputSize(outSize) {
     weights.resize(inSize, std::vector<double>(outSize));
     biases.resize(outSize, 0.0);
     
-    // Initialize with random numbers [-0.5, 0.5]
+    // he init
     for(int i = 0; i < inSize; ++i) {
         for(int j = 0; j < outSize; ++j) {
-            weights[i][j] = ((double)rand() / RAND_MAX) - 0.5;
+            weights[i][j] = (((double)rand() / RAND_MAX) * 2.0 - 1.0) * std::sqrt(2.0 / inputSize);
         }
     }
 }
