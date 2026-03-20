@@ -17,3 +17,5 @@ train_nn
 .DS_Store
 
 env/
+
+*.bin

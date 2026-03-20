@@ -28,7 +28,9 @@ PYBIND11_MODULE(fent, m) {
         .def(py::init<>())
         .def("add", &Model::add, py::keep_alive<1, 2>())
         .def("forward", &Model::forward)
-        .def("backward", &Model::backward);
+        .def("backward", &Model::backward)
+        .def("save", &Model::save)
+        .def("load", &Model::load);
         
     py::class_<Loss>(m, "Loss")
         .def_static("cross_entropy_loss", &Loss::cross_entropy_loss)

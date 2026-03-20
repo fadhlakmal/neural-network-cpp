@@ -1,6 +1,7 @@
 #include "../include/Linear.hpp"
 #include <cstdlib>
 #include <cmath>
+#include <fstream>
 
 Linear::Linear(int inSize, int outSize) : inputSize(inSize), outputSize(outSize) {
     weights.resize(inSize, std::vector<double>(outSize));
@@ -42,4 +43,18 @@ std::vector<double> Linear::backward(const std::vector<double>& outputGradient, 
     }
     
     return inputGradient;
+}
+
+void Linear::save_weights(std::ofstream& file) {
+    for (const auto& row : weights) {
+        file.write(reinterpret_cast<const char*>(row.data()), row.size() * sizeof(double));
+    }
+    file.write(reinterpret_cast<const char*>(biases.data()), biases.size() * sizeof(double));
+}
+
+void Linear::load_weights(std::ifstream& file) {
+    for (auto& row : weights) {
+        file.read(reinterpret_cast<char*>(row.data()), row.size() * sizeof(double));
+    }
+    file.read(reinterpret_cast<char*>(biases.data()), biases.size() * sizeof(double));
 }

@@ -1,6 +1,7 @@
 #include "../include/Conv2D.hpp"
 #include <cstdlib>
 #include <cmath>
+#include <fstream>
 
 Conv2D::Conv2D(int inC, int inH, int inW, int outC, int kSize) : inChannels(inC), outChannels(outC), inHeight(inH), inWidth(inW), kernelSize(kSize) {
     outHeight = inHeight - kernelSize + 1;
@@ -83,4 +84,26 @@ std::vector<double> Conv2D::backward(const std::vector<double>& outputGradient, 
     }
 
     return inputGradient;
+}
+
+void Conv2D::save_weights(std::ofstream& file) {
+    for (int oc = 0; oc < outChannels; ++oc) {
+        for (int ic = 0; ic < inChannels; ++ic) {
+            for (int ky = 0; ky < kernelSize; ++ky) {
+                file.write(reinterpret_cast<const char*>(kernels[oc][ic][ky].data()), kernelSize * sizeof(double));
+            }
+        }
+    }
+    file.write(reinterpret_cast<const char*>(biases.data()), biases.size() * sizeof(double));
+}
+
+void Conv2D::load_weights(std::ifstream& file) {
+    for (int oc = 0; oc < outChannels; ++oc) {
+        for (int ic = 0; ic < inChannels; ++ic) {
+            for (int ky = 0; ky < kernelSize; ++ky) {
+                file.read(reinterpret_cast<char*>(kernels[oc][ic][ky].data()), kernelSize * sizeof(double));
+            }
+        }
+    }
+    file.read(reinterpret_cast<char*>(biases.data()), biases.size() * sizeof(double));
 }

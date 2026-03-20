@@ -63,6 +63,8 @@ for epoch in range(1, epochs + 1):
         
     print(f"epoch: {epoch} | avg loss: {epoch_loss / len(train_data):.6f}")
 
+# model.load("weights.bin")
+
 print("\ntesting")
 correct = 0
 for x_target, y_target in test_data:
@@ -76,3 +78,4 @@ for x_target, y_target in test_data:
         correct += 1
 
 print(f"acc: {correct / len(test_data) * 100}%")
+model.save("weights.bin")
