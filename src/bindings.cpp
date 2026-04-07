@@ -6,6 +6,7 @@
 #include "../include/Linear.hpp"
 #include "../include/Conv2D.hpp"
 #include "../include/MaxPool2D.hpp"
+#include "../include/RNN.hpp"
 #include "../include/Activations.hpp"
 #include "../include/Loss.hpp"
 #include "../include/Utils.hpp"
@@ -19,9 +20,14 @@ PYBIND11_MODULE(fent, m) {
         .def(py::init<int, int>());
     py::class_<Conv2D, Layer>(m, "Conv2D")
         .def(py::init<int, int, int, int, int>());
+    py::class_<RNN, Layer>(m, "RNN")
+        .def(py::init<int, int>())
+        .def("reset_states", &RNN::reset_states);
     py::class_<MaxPool2D, Layer>(m, "MaxPool2D")
         .def(py::init<int, int, int, int>());
     py::class_<ReLU, Layer>(m, "ReLU")
+        .def(py::init<>());
+    py::class_<Tanh, Layer>(m, "Tanh")
         .def(py::init<>());
 
     py::class_<Model>(m, "Model")
