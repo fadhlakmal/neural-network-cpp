@@ -5,7 +5,7 @@ TARGET = train_nn
 PYBIND_INCLUDES = $(shell python3 -m pybind11 --includes)
 PY_SUFFIX = $(shell python3-config --extension-suffix)
 
-SRCS = src/Model.cpp src/Linear.cpp src/Conv2D.cpp src/Activations.cpp src/Loss.cpp src/Utils.cpp src/MaxPool2D.cpp src/RNN.cpp src/Embedding.cpp
+SRCS = src/Model.cpp src/Linear.cpp src/Conv2D.cpp src/Activations.cpp src/Loss.cpp src/Utils.cpp src/MaxPool2D.cpp src/RNN.cpp src/Embedding.cpp src/Attention.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS) src/main.o

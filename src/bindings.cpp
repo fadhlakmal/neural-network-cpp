@@ -11,11 +11,14 @@
 #include "../include/Loss.hpp"
 #include "../include/Utils.hpp"
 #include "../include/Embedding.hpp"
+#include "../include/Attention.hpp"
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(fent, m) {
-    py::class_<Layer>(m, "Layer");
+    py::class_<Layer>(m, "Layer")
+        .def("forward", &Layer::forward)
+        .def("backward", &Layer::backward);
     py::class_<Linear, Layer>(m, "Linear")
         .def(py::init<int, int>());
     py::class_<Conv2D, Layer>(m, "Conv2D")
@@ -27,6 +30,8 @@ PYBIND11_MODULE(fent, m) {
         .def(py::init<int, int, int, int>());
     py::class_<Embedding, Layer>(m, "Embedding")
         .def(py::init<int, int>());
+    py::class_<Attention, Layer>(m, "Attention")
+        .def(py::init<int, int, int>());
     py::class_<ReLU, Layer>(m, "ReLU")
         .def(py::init<>());
     py::class_<Tanh, Layer>(m, "Tanh")
