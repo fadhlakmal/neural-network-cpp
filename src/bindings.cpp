@@ -11,7 +11,8 @@
 #include "../include/Loss.hpp"
 #include "../include/Utils.hpp"
 #include "../include/Embedding.hpp"
-#include "../include/Attention.hpp"
+#include "../include/SelfAttention.hpp"
+#include "../include/CrossAttention.hpp"
 
 namespace py = pybind11;
 
@@ -30,8 +31,11 @@ PYBIND11_MODULE(fent, m) {
         .def(py::init<int, int, int, int>());
     py::class_<Embedding, Layer>(m, "Embedding")
         .def(py::init<int, int>());
-    py::class_<Attention, Layer>(m, "Attention")
+    py::class_<SelfAttention, Layer>(m, "SelfAttention")
         .def(py::init<int, int, int>());
+    py::class_<CrossAttention, Layer>(m, "CrossAttention")
+        .def(py::init<int, int, int, int>())
+        .def("set_context", &CrossAttention::set_context);
     py::class_<ReLU, Layer>(m, "ReLU")
         .def(py::init<>());
     py::class_<Tanh, Layer>(m, "Tanh")

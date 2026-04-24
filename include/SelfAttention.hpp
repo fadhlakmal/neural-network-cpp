@@ -3,7 +3,7 @@
 #include <vector>
 #include <fstream>
 
-class Attention : public Layer {
+class SelfAttention : public Layer {
 private:
     int inputDim;
     int headDim;
@@ -16,7 +16,7 @@ private:
     }
 
 public:
-    Attention(int inputDim, int headDim, int rankDim);
+    SelfAttention(int inputDim, int headDim, int rankDim);
     std::vector<double> forward(const std::vector<double>& input) override;
     std::vector<double> backward(const std::vector<double>& outputGradient, double learningRate) override;
     void save_weights(std::ofstream& file) override;

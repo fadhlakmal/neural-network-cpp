@@ -1,9 +1,9 @@
-#include "../include/Attention.hpp"
+#include "../include/SelfAttention.hpp"
 #include <cstdlib>
 #include <cmath>
 #include <fstream>
 
-Attention::Attention(int inputDim, int headDim, int rankDim) : inputDim(inputDim), headDim(headDim), rankDim(rankDim) {
+SelfAttention::SelfAttention(int inputDim, int headDim, int rankDim) : inputDim(inputDim), headDim(headDim), rankDim(rankDim) {
     int size = inputDim * headDim;
     W_Q.resize(size);
     W_K.resize(size);
@@ -22,7 +22,7 @@ Attention::Attention(int inputDim, int headDim, int rankDim) : inputDim(inputDim
     }
 }
 
-std::vector<double> Attention::forward(const std::vector<double>& input) {
+std::vector<double> SelfAttention::forward(const std::vector<double>& input) {
     lastSeqLen = input.size() / inputDim;
     last_X = input;
     last_Q.assign(lastSeqLen * headDim, 0.0);
@@ -106,7 +106,7 @@ std::vector<double> Attention::forward(const std::vector<double>& input) {
     return output;
 }
 
-std::vector<double> Attention::backward(const std::vector<double>& outputGradient, double learningRate) {
+std::vector<double> SelfAttention::backward(const std::vector<double>& outputGradient, double learningRate) {
     std::vector<double> dW_Q(W_Q.size(), 0.0);
     std::vector<double> dW_K(W_K.size(), 0.0);
     std::vector<double> dW_Vd(W_Vd.size(), 0.0);
@@ -224,14 +224,14 @@ std::vector<double> Attention::backward(const std::vector<double>& outputGradien
     return dX;
 }
 
-void Attention::save_weights(std::ofstream& file) {
+void SelfAttention::save_weights(std::ofstream& file) {
     file.write(reinterpret_cast<const char*>(W_Q.data()), W_Q.size() * sizeof(double));
     file.write(reinterpret_cast<const char*>(W_K.data()), W_K.size() * sizeof(double));
     file.write(reinterpret_cast<const char*>(W_Vd.data()), W_Vd.size() * sizeof(double));
     file.write(reinterpret_cast<const char*>(W_Vu.data()), W_Vu.size() * sizeof(double));
 }
 
-void Attention::load_weights(std::ifstream& file) {
+void SelfAttention::load_weights(std::ifstream& file) {
     file.read(reinterpret_cast<char*>(W_Q.data()), W_Q.size() * sizeof(double));
     file.read(reinterpret_cast<char*>(W_K.data()), W_K.size() * sizeof(double));
     file.read(reinterpret_cast<char*>(W_Vd.data()), W_Vd.size() * sizeof(double));
