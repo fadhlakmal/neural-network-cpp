@@ -210,23 +210,24 @@ std::vector<double> CrossAttention::backward(const std::vector<double>& outputGr
         }
     }
 
-    // Q grad wrt W_Q and query input
-    for (int q_idx = 0; q_idx < querySeqLen; ++q_idx) {
+    last_dX_context.assign(contextSeqLen * contextDim, 0.0);
+
+    // dK grad wrt W_K
+    for (int k_idx = 0; k_idx < contextSeqLen; ++k_idx) {
         for (int dim_idx = 0; dim_idx < headDim; ++dim_idx) {
-            double q_grad = dQ[getIndex(q_idx, dim_idx, headDim)];
-            for (int i = 0; i < queryDim; ++i) {
-                dW_Q[getIndex(i, dim_idx, headDim)] += last_query_X[getIndex(q_idx, i, queryDim)] * q_grad;
-                dX_query[getIndex(q_idx, i, queryDim)] += W_Q[getIndex(i, dim_idx, headDim)] * q_grad;
+            double k_grad = dK[getIndex(k_idx, dim_idx, headDim)];
+            for (int i = 0; i < contextDim; ++i) {
+                last_dX_context[getIndex(k_idx, i, contextDim)] += W_K[getIndex(i, dim_idx, headDim)] * k_grad;
             }
         }
     }
 
     // K grad wrt W_K
     for (int k_idx = 0; k_idx < contextSeqLen; ++k_idx) {
-        for (int dim_idx = 0; dim_idx < headDim; ++dim_idx) {
-            double k_grad = dK[getIndex(k_idx, dim_idx, headDim)];
+        for (int r_idx = 0; r_idx < rankDim; ++r_idx) {
+            double hv_grad = dHv[getIndex(k_idx, r_idx, rankDim)];
             for (int i = 0; i < contextDim; ++i) {
-                dW_K[getIndex(i, dim_idx, headDim)] += last_context_X[getIndex(k_idx, i, contextDim)] * k_grad;
+                last_dX_context[getIndex(k_idx, i, contextDim)] += W_Vd[getIndex(i, r_idx, rankDim)] * hv_grad;
             }
         }
     }
@@ -238,6 +239,10 @@ std::vector<double> CrossAttention::backward(const std::vector<double>& outputGr
     for (size_t i = 0; i < W_Vu.size(); ++i) W_Vu[i] -= learningRate * dW_Vu[i];
 
     return dX_query;
+}
+
+std::vector<double> CrossAttention::get_context_gradient() {
+    return last_dX_context;
 }
 
 void CrossAttention::save_weights(std::ofstream& file) {

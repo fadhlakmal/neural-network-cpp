@@ -35,7 +35,8 @@ PYBIND11_MODULE(fent, m) {
         .def(py::init<int, int, int>());
     py::class_<CrossAttention, Layer>(m, "CrossAttention")
         .def(py::init<int, int, int, int>())
-        .def("set_context", &CrossAttention::set_context);
+        .def("set_context", &CrossAttention::set_context)
+        .def("get_context_gradient", &CrossAttention::get_context_gradient);
     py::class_<ReLU, Layer>(m, "ReLU")
         .def(py::init<>());
     py::class_<Tanh, Layer>(m, "Tanh")
